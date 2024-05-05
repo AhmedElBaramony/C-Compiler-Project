@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 public class Lexer {
     public enum TokenType {
-        COMMENT, MACRO, KEYWORD, IDENTIFIER, LITERAL, NUMBER, OPERATOR, DELIMITER, WHITESPACE, ERROR
+        COMMENT, MACRO, KEYWORD, IDENTIFIER, LITERAL, NUMBER, OPERATOR, DELIMITER, WHITESPACE,ERROR ,PROGRAM
     }
 
     static String signPart = "(((\\+-)*\\+?)|((-\\+)*-?))";
@@ -24,6 +24,17 @@ public class Lexer {
     static String numberRegex =  base2 + "|" + base16 + "|"+ base8 + "|"+ exponentialRegex
             + "|" + floatRegex + "|" + integerRegex;
 
+    static String arithmeticOperatorsRegex = "[+\\-*/%]";
+    static String assignmentOperatorsRegex = "(=|\\+=|-=|\\*=|/=|%=|&=|\\|=|\\^=|<<=|>>=)";
+    static String incrementDecrementOperatorsRegex = "(\\+\\+|--)";
+    static String relationalInequalityOperatorsRegex = "(<=|>=|<|>)";
+    static String relationalEqualityOperatorsRegex = "(==|!=)";
+    static String logicalOperatorsRegex = "(&&|\\|\\||!)";
+    static String bitwiseOperatorsRegex = "(&|\\||\\^|~|<<|>>)";
+    static String allOperatorsRegex =relationalEqualityOperatorsRegex+"|"+ logicalOperatorsRegex + "|" + incrementDecrementOperatorsRegex +"|"+ assignmentOperatorsRegex +"|" + bitwiseOperatorsRegex + "|" + relationalInequalityOperatorsRegex + "|" + arithmeticOperatorsRegex;
+
+
+
     private static final Pattern[] patterns = {
             Pattern.compile("\\\\\\*.*\\*\\\\|\\\\\\\\.*"),                // Comments
             Pattern.compile("#.*"),                                        //Macros
@@ -31,7 +42,7 @@ public class Lexer {
             Pattern.compile("\\b\\*?[a-zA-Z_][a-zA-Z0-9_]*\\b"),     // Identifiers
             Pattern.compile("\"(.)*\""),                                   //Literal
             Pattern.compile("\\b"+numberRegex+"\\b"),                      // Numbers
-            Pattern.compile("\\+=|-=|\\*=|/=|%=|&=|\\|=|\\^=|>>=|<<=|\\+\\+|\\+|--|-|\\*|/|%|<<|>>|<=|>=|>|<|=|&|\\||\\^"),  // Operators
+            Pattern.compile(allOperatorsRegex),  // Operators
             Pattern.compile("[(){};,]"),                                   // Delimiters
             Pattern.compile("\\s+"),                                       // Whitespace -------------------------> Not token !!!!!!!!!!!!!!!!!!
             Pattern.compile(".*")                                           // Error
