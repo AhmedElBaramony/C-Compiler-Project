@@ -21,7 +21,9 @@ public class Main {
         SymbolTable symbolTable = new SymbolTable();
         symbolTable.setTokens(lexer.tokenize(code));
 
-        symbolTable.printTable();
+        symbolTable.printTokenTable();
+        System.out.println("The symbol table contains the following tokens:");
+        symbolTable.printSymbolTable();
     }
 }
 

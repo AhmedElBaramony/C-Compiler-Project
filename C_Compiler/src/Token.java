@@ -6,4 +6,20 @@ public class Token {
         this.type = type;
         this.value = value;
     }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public Lexer.TokenType getType() {
+        return type;
+    }
+
+    public void setType(Lexer.TokenType type) {
+        this.type = type;
+    }
 }
