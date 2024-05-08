@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
         String code = """
@@ -19,11 +22,16 @@ public class Main {
 
         Lexer lexer = new Lexer();
         SymbolTable symbolTable = new SymbolTable();
-        symbolTable.setTokens(lexer.tokenize(code));
+        List<Token> tokens = lexer.tokenize(code);
+        symbolTable.setTokens(tokens);
 
+
+
+        symbolTable.makeSymbolTable();
         symbolTable.printTokenTable();
-        System.out.println("The symbol table contains the following tokens:");
-        symbolTable.printSymbolTable();
+        // Add your tokens here
+        Parser parser = new Parser(lexer.tokenize_str(tokens));
+        parser.parse();
     }
 }
 

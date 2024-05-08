@@ -83,4 +83,16 @@ public class Lexer {
         return tokens;
     }
 
+    public List<String> tokenize_str(List<Token> tokens)
+    {
+        List<String> list = new ArrayList<>();
+
+        for(Token token:tokens)
+        {
+            list.add(token.getValue());
+        }
+
+        return list;
+    }
+
 }

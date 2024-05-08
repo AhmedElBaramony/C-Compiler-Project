@@ -18,26 +18,40 @@ public class SymbolTable {
         symbols.add(symbol);
     }
 
-    public String searchSymbol(String symbol) {
+    public int searchSymbolIndex(String symbol) {
         for (Token sym : symbols) {
             if (Objects.equals(sym.getValue(), symbol)){
-                return symbol;
+                return symbols.indexOf(sym);
             }
         }
-        return null;
+        return -1;
     }
 
     public void printTokenTable(){
+
+        System.out.println("\n********************************Token Table******************************\n");
+
         for (Token token : tokens) {
-            System.out.println("<"+token.getType() + "   ,   " + token.getValue()+">");
+            if (token.getPointer() != -1) {
+                System.out.println("<"+token.getType() + "   ,   " + token.getValue() + "   ,   Loc: " + token.getPointer() + ">");
+            }
+            else {
+                System.out.println("<"+token.getType() + "   ,   " + token.getValue()+">");
+            }
         }
     }
 
-    public void printSymbolTable(){
+    public void makeSymbolTable(){
+
+        System.out.println("\n********************************Symbol Table******************************\n");
+
         for (Token token : tokens) {
-            if (token.getType() == Lexer.TokenType.IDENTIFIER && searchSymbol(token.getValue()) == null){
+            if (token.getType() == Lexer.TokenType.IDENTIFIER && searchSymbolIndex(token.getValue()) == -1){
                 setSymbol(token);
                 System.out.println(token.getValue());
+            }
+            else if (token.getType() == Lexer.TokenType.IDENTIFIER && searchSymbolIndex(token.getValue()) != -1){
+                token.setPointer(searchSymbolIndex(token.getValue()));
             }
         }
     }
