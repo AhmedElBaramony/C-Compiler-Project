@@ -174,7 +174,15 @@ class Parser {
 
         } else if (token.equals("return")) {
             returnStmt(root);
-        } else {
+        }
+
+        /*
+        else if(token.equals("for")) {
+            forStmt(root);
+        }*/
+
+        else {
+
             expressionStmt(root);
         }
     }
@@ -190,6 +198,18 @@ class Parser {
         tree.addChild(root, x);
 
     }
+
+
+    /*
+
+    private void forStmt(TextInBox parent) {
+        TextInBox root = new TextInBox("forStmt", 40, 20);
+        tree.addChild(parent, root);
+
+
+    }
+    */
+
 
     private void expression(TextInBox parent) {
         TextInBox root = new TextInBox("expression", 40, 20);
@@ -304,6 +324,62 @@ class Parser {
         tree.addChild(root, y);
 
     }
+
+
+
+
+    /////////////////////////////// Not Finished/////////////////////////////
+    private void additiveExpression(TextInBox parent) {
+        TextInBox root = new TextInBox("additiveExpression", 40, 20);
+        tree.addChild(parent, root);
+
+        while () {
+            additiveExpression(root);
+        }
+
+
+    }
+
+
+
+    /////////////////////////////// Not Finished/////////////////////////////
+    private void addOp(TextInBox parent) {
+        TextInBox root = new TextInBox("addOp", 40, 20);
+        tree.addChild(parent, root);
+
+        String token = tokens.get(currentTokenIndex).getValue();
+        if (token.equals("+")) {
+            match(token);
+            TextInBox x = new TextInBox("+", 40, 20);
+            tree.addChild(root, x);
+        }
+        else if (token.equals("-")) {
+            match(token);
+            TextInBox y = new TextInBox("-", 40, 20);
+            tree.addChild(root, y);
+        }
+    }
+
+
+    /////////////////////////////// Not Finished/////////////////////////////
+
+    private void relOp(TextInBox parent) {
+        TextInBox root = new TextInBox("relOp", 40, 20);
+        tree.addChild(parent, root);
+
+        String token = tokens.get(currentTokenIndex).getValue();
+        if (token.equals("+")) {
+            match(token);
+            TextInBox x = new TextInBox("+", 40, 20);
+            tree.addChild(root, x);
+        }
+        else if (token.equals("-")) {
+            match(token);
+            TextInBox y = new TextInBox("-", 40, 20);
+            tree.addChild(root, y);
+        }
+    }
+
 
     private void match(String expectedToken) {
         if (currentTokenIndex < tokens.size() && tokens.get(currentTokenIndex).getValue().equals(expectedToken)) {
