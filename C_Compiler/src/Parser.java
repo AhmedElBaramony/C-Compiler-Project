@@ -328,21 +328,21 @@ class Parser {
 
 
 
-    /////////////////////////////// Not Finished/////////////////////////////
+    /////////////////////////////// Not Finished /////////////////////////////
     private void additiveExpression(TextInBox parent) {
         TextInBox root = new TextInBox("additiveExpression", 40, 20);
         tree.addChild(parent, root);
 
-        while () {
+
             additiveExpression(root);
-        }
+
 
 
     }
 
 
 
-    /////////////////////////////// Not Finished/////////////////////////////
+    /////////////////////////////// Not Finished /////////////////////////////
     private void addOp(TextInBox parent) {
         TextInBox root = new TextInBox("addOp", 40, 20);
         tree.addChild(parent, root);
@@ -361,7 +361,7 @@ class Parser {
     }
 
 
-    /////////////////////////////// Not Finished/////////////////////////////
+    /////////////////////////////// Not Finished /////////////////////////////
 
     private void relOp(TextInBox parent) {
         TextInBox root = new TextInBox("relOp", 40, 20);
