@@ -1,9 +1,30 @@
+import org.abego.treelayout.demo.TextInBox;
+import org.abego.treelayout.util.DefaultTreeForTreeLayout;
+
 import java.util.ArrayList;
 import java.util.List;
 
 class Parser {
     private List<String> tokens;
     private int currentTokenIndex;
+    TextInBox Root = new TextInBox("Top el Top", 40, 20);
+    DefaultTreeForTreeLayout<TextInBox> tree = new DefaultTreeForTreeLayout<TextInBox>(Root);
+
+    public List<String> getTokens() {
+        return tokens;
+    }
+
+    public int getCurrentTokenIndex() {
+        return currentTokenIndex;
+    }
+
+    public DefaultTreeForTreeLayout<TextInBox> getTree() {
+        return tree;
+    }
+
+    public TextInBox getRoot() {
+        return Root;
+    }
 
     public Parser(List<String> tokens) {
         this.tokens = tokens;
@@ -14,13 +35,16 @@ class Parser {
         program();
     }
 
-    private void program() {
-        match("{");
-        declaration();
-        match("}");
+    private TextInBox program() {
+        TextInBox root = new TextInBox("program", 40, 20);
+        tree.addChild(Root,root );
+        TextInBox decl =declaration();
+        tree.addChild(root,decl);
+        return root;
     }
 
-    private void declaration() {
+    private TextInBox declaration() {
+        TextInBox root = new TextInBox("declaration", 40, 20);
         if (tokens.get(currentTokenIndex).equals("int") || tokens.get(currentTokenIndex).equals("float")
                 || tokens.get(currentTokenIndex).equals("double") || tokens.get(currentTokenIndex).equals("char")) {
             varDeclaration();
@@ -31,46 +55,58 @@ class Parser {
         } else {
             // Handle error or return
         }
+        return root;
     }
 
-    private void varDeclaration() {
+    private TextInBox varDeclaration() {
+        TextInBox root = new TextInBox("varDeclaration", 40, 20);
         typeSpecifier();
         match("ID");
         match(";");
+        return root;
     }
 
-    private void typeSpecifier() {
+    private TextInBox typeSpecifier() {
+        TextInBox root = new TextInBox("typeSpecifier", 40, 20);
         String token = tokens.get(currentTokenIndex);
         if (token.equals("int") || token.equals("float") || token.equals("double") || token.equals("char")) {
             match(token);
         } else {
             // Handle error or return
         }
+        return root;
     }
 
-    private void funcDeclaration() {
+    private TextInBox funcDeclaration() {
+        TextInBox root = new TextInBox("funcDeclaration", 40, 20);
         typeSpecifier();
         match("ID");
         match("(");
         params();
         match(")");
         compoundStmt();
+        return root;
     }
 
-    private void params() {
+    private TextInBox params() {
+        TextInBox root = new TextInBox("params", 40, 20);
         param();
         while (tokens.get(currentTokenIndex).equals(",")) {
             match(",");
             param();
         }
+        return root;
     }
 
-    private void param() {
+    private TextInBox param() {
+        TextInBox root = new TextInBox("param", 40, 20);
         typeSpecifier();
         match("ID");
+        return root;
     }
 
-    private void compoundStmt() {
+    private TextInBox compoundStmt() {
+        TextInBox root = new TextInBox("compoundStmt", 40, 20);
         match("{");
         while (!tokens.get(currentTokenIndex).equals("}")) {
             if (tokens.get(currentTokenIndex).equals("int") || tokens.get(currentTokenIndex).equals("float")
@@ -81,27 +117,34 @@ class Parser {
             }
         }
         match("}");
+        return root;
     }
 
-    private void statement() {
+    private TextInBox statement() {
+        TextInBox root = new TextInBox("statement", 40, 20);
         String token = tokens.get(currentTokenIndex);
         if (token.equals("if")) {
             selectionStmt();
         } else if (token.equals("while")) {
             iterationStmt();
+
         } else if (token.equals("return")) {
             returnStmt();
         } else {
             expressionStmt();
         }
+        return root;
     }
 
-    private void expressionStmt() {
+    private TextInBox expressionStmt() {
+        TextInBox root = new TextInBox("expressionStmt", 40, 20);
         expression();
         match(";");
+        return root;
     }
 
-    private void expression() {
+    private TextInBox expression() {
+        TextInBox root = new TextInBox("expression", 40, 20);
         if (tokens.get(currentTokenIndex).equals("ID")) {
             match("ID");
             match("=");
@@ -109,9 +152,11 @@ class Parser {
         } else {
             simpleExpression();
         }
+        return root;
     }
 
-    private void simpleExpression() {
+    private TextInBox simpleExpression() {
+        TextInBox root = new TextInBox("simpleExpression", 40, 20);
         String token = tokens.get(currentTokenIndex);
         if (token.equals("ID") || token.equals("number")) {
             match(token);
@@ -120,9 +165,11 @@ class Parser {
             expression();
             match(")");
         }
+        return root;
     }
 
-    private void selectionStmt() {
+    private TextInBox selectionStmt() {
+        TextInBox root = new TextInBox("selectionStmt", 40, 20);
         match("if");
         match("(");
         expression();
@@ -132,22 +179,30 @@ class Parser {
             match("else");
             statement();
         }
+        return root;
     }
 
-    private void iterationStmt() {
+    private TextInBox iterationStmt() {
+        TextInBox root = new TextInBox("iterationStmt", 40, 20);
         match("while");
         match("(");
         expression();
         match(")");
         statement();
+
+        return root;
     }
 
-    private void returnStmt() {
+    private TextInBox returnStmt() {
+        TextInBox root = new TextInBox("returnStmt", 40, 20);
         match("return");
+
         if (!tokens.get(currentTokenIndex).equals(";")) {
             expression();
+
         }
         match(";");
+        return root;
     }
 
     private void match(String expectedToken) {

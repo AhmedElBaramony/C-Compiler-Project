@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 public class Lexer {
     public enum TokenType {
-        COMMENT, MACRO, KEYWORD, IDENTIFIER, LITERAL, NUMBER, OPERATOR, DELIMITER, WHITESPACE,ERROR ,PROGRAM
+        COMMENT, MACRO, KEYWORD,FUN_IDENTIFIER, VAR_IDENTIFIER, LITERAL, NUMBER, OPERATOR, DELIMITER, WHITESPACE,ERROR ,PROGRAM
     }
 
     static String signPart = "(((\\+-)*\\+?)|((-\\+)*-?))";
@@ -39,7 +39,8 @@ public class Lexer {
             Pattern.compile("\\\\\\*.*\\*\\\\|\\\\\\\\.*"),                // Comments
             Pattern.compile("#.*"),                                        //Macros
             Pattern.compile("\\b(if|else|while|for|int|float|return|Alignas|Alignof|auto|Bool|break|case|char|const|continue|default|do|double|enum|extern|false|goto|inline|long|nullptr|register|restrict|short|signed|sizeof|static|struct|switch|True|typedef|union|unsigned|void|volatile)\\b"), // Keywords
-            Pattern.compile("\\b\\*?[a-zA-Z_][a-zA-Z0-9_]*\\b"),     // Identifiers
+            Pattern.compile("\\b[a-zA-Z_][a-zA-Z0-9_]*\\b(?=\\()"),     // Function Identifiers
+            Pattern.compile("\\b[a-zA-Z_][a-zA-Z0-9_]*\\b"),             // Variable identifier
             Pattern.compile("\"(.)*\""),                                   //Literal
             Pattern.compile("\\b"+numberRegex+"\\b"),                      // Numbers
             Pattern.compile(allOperatorsRegex),  // Operators
@@ -83,8 +84,8 @@ public class Lexer {
         return tokens;
     }
 
-    public List<String> tokenize_str(List<Token> tokens)
-    {
+    public List<String> tokenize_str(List<Token> tokens) {
+
         List<String> list = new ArrayList<>();
 
         for(Token token:tokens)

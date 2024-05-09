@@ -21,13 +21,18 @@ public class SemanticAnalyzer {
                         isFunctionNameExpected = true;
                     }
                     break;
-                case IDENTIFIER:
+                case VAR_IDENTIFIER:
                     if (currentFunction != null && isFunctionNameExpected) {
                         // Function name
                         currentFunction.addChild(new TreeNode(token));
                         isFunctionNameExpected = false;
                     }
                     break;
+                case FUN_IDENTIFIER:
+                    if (currentFunction != null && isFunctionNameExpected) {
+                        currentFunction.addChild(new TreeNode(token));
+                        isFunctionNameExpected = false;
+                    }
                 case DELIMITER:
                     if (isTokenStartOfStatement(token)) {
                         // Start of a statement

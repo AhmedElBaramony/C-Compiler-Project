@@ -46,11 +46,11 @@ public class SymbolTable {
         System.out.println("\n********************************Symbol Table******************************\n");
 
         for (Token token : tokens) {
-            if (token.getType() == Lexer.TokenType.IDENTIFIER && searchSymbolIndex(token.getValue()) == -1){
+            if (token.getType() == Lexer.TokenType.VAR_IDENTIFIER && searchSymbolIndex(token.getValue()) == -1){
                 setSymbol(token);
                 System.out.println(token.getValue());
             }
-            else if (token.getType() == Lexer.TokenType.IDENTIFIER && searchSymbolIndex(token.getValue()) != -1){
+            else if (token.getType() == Lexer.TokenType.VAR_IDENTIFIER && searchSymbolIndex(token.getValue()) != -1){
                 token.setPointer(searchSymbolIndex(token.getValue()));
             }
         }
