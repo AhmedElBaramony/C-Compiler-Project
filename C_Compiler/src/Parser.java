@@ -93,8 +93,8 @@ class Parser {
         tree.addChild(parent, root);
 
         typeSpecifier(root);
-        String token = tokens.get(currentTokenIndex).getValue();
 
+        String token = tokens.get(currentTokenIndex).getValue();
         match(token);
         TextInBox y = new TextInBox(token, 40, 20);
         tree.addChild(root, y);
@@ -111,6 +111,9 @@ class Parser {
         tree.addChild(root, t);
 
         compoundStmt(root);
+        if(currentTokenIndex+1<tokens.size()){
+            declaration(root);
+        }
     }
 
     private void params(TextInBox parent) {
@@ -130,8 +133,10 @@ class Parser {
     private void param(TextInBox parent) {
         TextInBox root = new TextInBox("param", 40, 20);
         tree.addChild(parent, root);
+        if(tokens.get(currentTokenIndex).getType().equals(Lexer.TokenType.KEYWORD)){
+            typeSpecifier(root);
+        }
 
-        typeSpecifier(root);
 
         String token = tokens.get(currentTokenIndex).getValue();
 
@@ -215,17 +220,19 @@ class Parser {
         TextInBox root = new TextInBox("expression", 40, 20);
         tree.addChild(parent, root);
 
-        if (tokens.get(currentTokenIndex).getValue().equals("ID")) {
+        if (tokens.get(currentTokenIndex).getType().equals(Lexer.TokenType.VAR_IDENTIFIER)) {
 
-            String token = tokens.get(currentTokenIndex).getValue();
-            match(token);
-            TextInBox y = new TextInBox(token, 40, 20);
+            Token token = tokens.get(currentTokenIndex);
+            match(token.getValue());
+            TextInBox y = new TextInBox(token.getValue(), 40, 20);
             tree.addChild(root, y);
 
-            match("=");
-            TextInBox x = new TextInBox("=", 40, 20);
-            tree.addChild(root, x);
-
+            //HARD CODED
+            if (token.getType().equals(Lexer.TokenType.OPERATOR)){
+                match(token.getValue());
+                TextInBox t= new TextInBox(token.getValue(), 40, 20);
+                tree.addChild(root, t);
+            }
             expression(root);
 
         } else {
@@ -237,12 +244,14 @@ class Parser {
         TextInBox root = new TextInBox("simpleExpression", 40, 20);
         tree.addChild(parent, root);
 
-        String token = tokens.get(currentTokenIndex).getValue();
-        if (token.equals(tokens.get(currentTokenIndex).getValue()) || token.equals("number")) {
+        Token token = tokens.get(currentTokenIndex);
+        if ((token.getType()).equals(Lexer.TokenType.VAR_IDENTIFIER) || token.getType().equals(Lexer.TokenType.NUMBER)) {
 
-            match(token);
-            TextInBox t = new TextInBox(token, 40, 20);
+            match(token.getValue());
+            TextInBox t = new TextInBox(token.getValue(), 40, 20);
             tree.addChild(root, t);
+        }else if((token.getType()).equals(Lexer.TokenType.FUN_IDENTIFIER)){
+            funcCall(root);
         } else {
             match("(");
             TextInBox x = new TextInBox("(", 40, 20);
@@ -254,6 +263,29 @@ class Parser {
             TextInBox y = new TextInBox(")", 40, 20);
             tree.addChild(root, y);
         }
+    }
+
+    private void funcCall(TextInBox parent) {
+        TextInBox root = new TextInBox("funcCall", 40, 20);
+        tree.addChild(parent, root);
+
+        String token = tokens.get(currentTokenIndex).getValue();
+
+        match(token);
+        TextInBox y = new TextInBox(token, 40, 20);
+        tree.addChild(root, y);
+
+
+        match("(");
+        TextInBox x = new TextInBox("(", 40, 20);
+        tree.addChild(root, x);
+
+        params(root);
+
+        match(")");
+        TextInBox t = new TextInBox(")", 40, 20);
+        tree.addChild(root, t);
+
     }
 
     private void selectionStmt(TextInBox parent) {
@@ -274,14 +306,30 @@ class Parser {
         TextInBox z = new TextInBox(")", 40, 20);
         tree.addChild(root, z);
 
+        match("{");
+        TextInBox a = new TextInBox("{", 40, 20);
+        tree.addChild(root, a);
+
         statement(root);
+
+        match("}");
+        TextInBox b = new TextInBox("}", 40, 20);
+        tree.addChild(root, b);
 
         if (tokens.get(currentTokenIndex).getValue().equals("else")) {
             match("else");
             TextInBox q = new TextInBox("else", 40, 20);
             tree.addChild(root, q);
 
+            match("{");
+            TextInBox c = new TextInBox("{", 40, 20);
+            tree.addChild(root, c);
+
             statement(root);
+
+            match("}");
+            TextInBox d = new TextInBox("}", 40, 20);
+            tree.addChild(root, d);
         }
     }
 
