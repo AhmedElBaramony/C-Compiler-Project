@@ -7,7 +7,7 @@ import java.util.List;
 class Parser {
     private List<Token> tokens;
     private int currentTokenIndex;
-    TextInBox Root = new TextInBox("Top el Top", 40, 20);
+    TextInBox Root = new TextInBox("Start", 40, 20);
     DefaultTreeForTreeLayout<TextInBox> tree = new DefaultTreeForTreeLayout<TextInBox>(Root);
 
     public List<Token> getTokens() {
@@ -65,6 +65,7 @@ class Parser {
         String token=tokens.get(currentTokenIndex).getValue();
         match(token);
         TextInBox y = new TextInBox(token, 40, 20);
+        tree.addChild(root, y);
 
         match(";");
         TextInBox x = new TextInBox(";", 40, 20);
@@ -137,7 +138,6 @@ class Parser {
             typeSpecifier(root);
         }
 
-
         String token = tokens.get(currentTokenIndex).getValue();
 
         match(token);
@@ -152,7 +152,6 @@ class Parser {
         match("{");
         TextInBox y = new TextInBox("{", 40, 20);
         tree.addChild(root, y);
-
 
         while (!tokens.get(currentTokenIndex).getValue().equals("}")) {
             if (tokens.get(currentTokenIndex).getValue().equals("int") || tokens.get(currentTokenIndex).getValue().equals("float")
@@ -180,14 +179,7 @@ class Parser {
         } else if (token.equals("return")) {
             returnStmt(root);
         }
-
-        /*
-        else if(token.equals("for")) {
-            forStmt(root);
-        }*/
-
         else {
-
             expressionStmt(root);
         }
     }
@@ -204,38 +196,26 @@ class Parser {
 
     }
 
-
-    /*
-
-    private void forStmt(TextInBox parent) {
-        TextInBox root = new TextInBox("forStmt", 40, 20);
-        tree.addChild(parent, root);
-
-
-    }
-    */
-
-
     private void expression(TextInBox parent) {
         TextInBox root = new TextInBox("expression", 40, 20);
         tree.addChild(parent, root);
 
         if (tokens.get(currentTokenIndex).getType().equals(Lexer.TokenType.VAR_IDENTIFIER)) {
-
             Token token = tokens.get(currentTokenIndex);
             match(token.getValue());
             TextInBox y = new TextInBox(token.getValue(), 40, 20);
             tree.addChild(root, y);
 
             //HARD CODED
+            token = tokens.get(currentTokenIndex);
             if (token.getType().equals(Lexer.TokenType.OPERATOR)){
                 match(token.getValue());
                 TextInBox t= new TextInBox(token.getValue(), 40, 20);
                 tree.addChild(root, t);
             }
             expression(root);
-
-        } else {
+        }
+        else {
             simpleExpression(root);
         }
     }
@@ -246,22 +226,13 @@ class Parser {
 
         Token token = tokens.get(currentTokenIndex);
         if ((token.getType()).equals(Lexer.TokenType.VAR_IDENTIFIER) || token.getType().equals(Lexer.TokenType.NUMBER)) {
-
             match(token.getValue());
             TextInBox t = new TextInBox(token.getValue(), 40, 20);
             tree.addChild(root, t);
         }else if((token.getType()).equals(Lexer.TokenType.FUN_IDENTIFIER)){
             funcCall(root);
         } else {
-            match("(");
-            TextInBox x = new TextInBox("(", 40, 20);
-            tree.addChild(root, x);
-
-            expression(root);
-
-            match(")");
-            TextInBox y = new TextInBox(")", 40, 20);
-            tree.addChild(root, y);
+            //expression(root);
         }
     }
 
@@ -370,7 +341,6 @@ class Parser {
         match(";");
         TextInBox y = new TextInBox(";", 40, 20);
         tree.addChild(root, y);
-
     }
 
 

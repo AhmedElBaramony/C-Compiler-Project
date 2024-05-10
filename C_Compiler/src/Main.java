@@ -13,12 +13,13 @@ public class Main {
                     if (n <= 1) {
                         return 1;
                     } else {
-                        return n * factorial(n);
+                        return n;
                     }
                 }
-                int main() {
-                    int num = 6;
-                    printf("Factorial of %d is %d\\n", num, factorial(num));
+                int main(int m) {
+                    int num;
+                    factorial(num);
+                    printf("Factorial of %d is %d\\n", num);
                     return 0;
                 }
                 """;
