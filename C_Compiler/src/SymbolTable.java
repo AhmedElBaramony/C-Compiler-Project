@@ -46,13 +46,13 @@ public class SymbolTable {
     }
 
     public void makeSymbolTable(){
-        System.out.println("\n********************************Symbol Table******************************\n");
+        //System.out.println("\n********************************Symbol Table******************************\n");
 
         for (Token token : tokens) {
             if(token.getType() == Lexer.TokenType.VAR_IDENTIFIER || token.getType() == Lexer.TokenType.FUN_IDENTIFIER){
                 if(searchSymbolIndex(token.getValue()) == -1){
                     setSymbol(token);
-                    System.out.println(token.getValue());
+                    //System.out.println(token.getValue());
                 }
                 else{
                     token.setPointer(searchSymbolIndex(token.getValue()));
