@@ -182,12 +182,11 @@ class Parser {
         tree.addChild(parent, root);
 
         String token = tokens.get(currentTokenIndex).getValue();
-        if (token.equals("if")) {
+        if(token.equals("if")) {
             selectionStmt(root);
         }
         else if (token.equals("while")) {
             iterationStmt(root);
-
         }
         else if (token.equals("return")) {
             returnStmt(root);
@@ -199,18 +198,6 @@ class Parser {
             TextInBox x = new TextInBox(";", 40, 20);
             tree.addChild(root, x);
         }
-    }
-
-    //Lazmet omha eh ya Hesham!!!!!!
-    private void expressionStmt(TextInBox parent) {
-        TextInBox root = new TextInBox("expressionStmt", 40, 20);
-        tree.addChild(parent, root);
-
-        expression(root);
-
-        match(";");
-        TextInBox x = new TextInBox(";", 40, 20);
-        tree.addChild(root, x);
     }
 
     private void expression(TextInBox parent) {
@@ -225,28 +212,23 @@ class Parser {
             TextInBox y = new TextInBox(token.getValue(), 40, 20);
             tree.addChild(root, y);
 
-            token = tokens.get(currentTokenIndex);
-            //To be divided!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            if (token.getType().equals(Lexer.TokenType.OPERATOR)){
-                match(token.getValue());
-                TextInBox t = new TextInBox(token.getValue(), 40, 20);
-                tree.addChild(root, t);
-
-                expression(root);
-            }
         }
         else if(token.getType().equals(Lexer.TokenType.FUN_IDENTIFIER)){
             funcCall(root);
+        }
+        else
+            return;
 
-            token = tokens.get(currentTokenIndex);
-            //To be divided!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            if (token.getType().equals(Lexer.TokenType.OPERATOR)){
-                match(token.getValue());
-                TextInBox t = new TextInBox(token.getValue(), 40, 20);
-                tree.addChild(root, t);
+        token = tokens.get(currentTokenIndex);
+        //To be divided!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //Can it even be divided?!!
+        //Does it even need to????
+        if (token.getType().equals(Lexer.TokenType.OPERATOR)){
+            match(token.getValue());
+            TextInBox t = new TextInBox(token.getValue(), 40, 20);
+            tree.addChild(root, t);
 
-                expression(root);
-            }
+            expression(root);
         }
     }
 
@@ -321,30 +303,27 @@ class Parser {
         TextInBox z = new TextInBox(")", 40, 20);
         tree.addChild(root, z);
 
-        match("{");
-        TextInBox a = new TextInBox("{", 40, 20);
-        tree.addChild(root, a);
+        Token token = tokens.get(currentTokenIndex);
 
-        statement(root);
-
-        match("}");
-        TextInBox b = new TextInBox("}", 40, 20);
-        tree.addChild(root, b);
+        if(token.getValue().equals("{")){
+            compoundStmt(root);
+        }
+        else{
+            statement(root);
+        }
 
         if (tokens.get(currentTokenIndex).getValue().equals("else")) {
             match("else");
             TextInBox q = new TextInBox("else", 40, 20);
             tree.addChild(root, q);
 
-            match("{");
-            TextInBox c = new TextInBox("{", 40, 20);
-            tree.addChild(root, c);
-
-            statement(root);
-
-            match("}");
-            TextInBox d = new TextInBox("}", 40, 20);
-            tree.addChild(root, d);
+            token = tokens.get(currentTokenIndex);
+            if(token.getValue().equals("{")){
+                compoundStmt(root);
+            }
+            else{
+                statement(root);
+            }
         }
     }
 
@@ -360,14 +339,19 @@ class Parser {
         TextInBox y = new TextInBox("(", 40, 20);
         tree.addChild(root, y);
 
-        //Expression?? needs revision
         expression(root);
 
         match(")");
         TextInBox z = new TextInBox(")", 40, 20);
         tree.addChild(root, z);
 
-        statement(root);
+        Token token = tokens.get(currentTokenIndex);
+        if(token.getValue().equals("{")){
+            compoundStmt(root);
+        }
+        else{
+            statement(root);
+        }
     }
 
     private void returnStmt(TextInBox parent) {
@@ -385,10 +369,7 @@ class Parser {
         match(";");
         TextInBox y = new TextInBox(";", 40, 20);
         tree.addChild(root, y);
-
     }
-
-
 
 
     /////////////////////////////// Not Finished /////////////////////////////
@@ -449,8 +430,9 @@ class Parser {
             currentTokenIndex++;
         }
         else {
+            //Handling errors isn't always working!!!
             error = tokens.get(currentTokenIndex).getValue();
-            currentTokenIndex = tokens.size() - 1;
+            currentTokenIndex = tokens.size();
         }
     }
 }

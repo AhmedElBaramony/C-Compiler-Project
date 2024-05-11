@@ -20,11 +20,10 @@ public class Main {
                 \\* This is a multi-line comment *\\\s
                 #include <stdio.h>
                 int factorial(int n) {
-                    if (n <= 1) {
+                    if (n <= 1)
                         return 1;
-                    } else {
+                    else
                         return factorial(n - 1) * factorial(n - 2);
-                    }
                 }
                 int main() {
                     num = 1 + 1 * 10;
