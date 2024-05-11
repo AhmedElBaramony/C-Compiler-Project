@@ -166,7 +166,6 @@ class Parser {
         tree.addChild(parent, root);
 
         Token token = tokens.get(currentTokenIndex);
-        // Lexer needs to differentiate between the keywords and specifiers
         if (token.getValue().equals("int") || token.getValue().equals("float") ||
                 token.getValue().equals("double") || token.getValue().equals("char")){
             match(token.getValue());
@@ -294,9 +293,6 @@ class Parser {
             return;
 
         token = tokens.get(currentTokenIndex);
-        //To be divided!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        //Can it even be divided?!!
-        //Does it even need to????
         if (token.getType().equals(Lexer.TokenType.OPERATOR)){
             match(token.getValue());
             TextInBox t = new TextInBox(token.getValue(), 40, 20);
@@ -446,65 +442,11 @@ class Parser {
     }
 
 
-    /////////////////////////////// Not Finished /////////////////////////////
-    private void additiveExpression(TextInBox parent) {
-        TextInBox root = new TextInBox("additiveExpression", 40, 20);
-        tree.addChild(parent, root);
-
-
-            additiveExpression(root);
-
-
-
-    }
-
-
-
-    /////////////////////////////// Not Finished /////////////////////////////
-    private void addOp(TextInBox parent) {
-        TextInBox root = new TextInBox("addOp", 40, 20);
-        tree.addChild(parent, root);
-
-        String token = tokens.get(currentTokenIndex).getValue();
-        if (token.equals("+")) {
-            match(token);
-            TextInBox x = new TextInBox("+", 40, 20);
-            tree.addChild(root, x);
-        }
-        else if (token.equals("-")) {
-            match(token);
-            TextInBox y = new TextInBox("-", 40, 20);
-            tree.addChild(root, y);
-        }
-    }
-
-
-    /////////////////////////////// Not Finished /////////////////////////////
-
-    private void relOp(TextInBox parent) {
-        TextInBox root = new TextInBox("relOp", 40, 20);
-        tree.addChild(parent, root);
-
-        String token = tokens.get(currentTokenIndex).getValue();
-        if (token.equals("+")) {
-            match(token);
-            TextInBox x = new TextInBox("+", 40, 20);
-            tree.addChild(root, x);
-        }
-        else if (token.equals("-")) {
-            match(token);
-            TextInBox y = new TextInBox("-", 40, 20);
-            tree.addChild(root, y);
-        }
-    }
-
-
     private void match(String expectedToken) {
         if (currentTokenIndex < tokens.size() && tokens.get(currentTokenIndex).getValue().equals(expectedToken)) {
             currentTokenIndex++;
         }
         else {
-            //Handling errors isn't always working!!!
             error = tokens.get(currentTokenIndex).getValue();
             currentTokenIndex = tokens.size();
         }
