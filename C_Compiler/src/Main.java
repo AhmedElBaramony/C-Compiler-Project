@@ -5,6 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
+    public static int findLine(String code, String targetLine) {
+        String[] lines = code.split("\n");
+        for (int i = 0; i < lines.length; i++) {
+            if (lines[i].contains(targetLine)) {
+                return i + 1; // Adding 1 to make line numbers human-readable (starting from 1)
+            }
+        }
+        return -1; // Return -1 if the line is not found
+    }
+
     public static void main(String[] args) {
         String code = """
                 \\* This is a multi-line comment *\\\s
@@ -13,31 +23,33 @@ public class Main {
                     if (n <= 1) {
                         return 1;
                     } else {
-                        return n;
+                        return factorial(n - 1) * factorial(n - 2);
                     }
                 }
-                int main(int m) {
-                    int num;
-                    factorial(num);
-                    printf("Factorial of %d is %d\\n", num);
+                int main() {
+                    num = 1 + 1 * 10;
+                    printf("Factorial of %d is %d\\n", num, factorial(num));
                     return 0;
                 }
                 """;
-
         Lexer lexer = new Lexer();
         SymbolTable symbolTable = new SymbolTable();
         List<Token> tokens = lexer.tokenize(code);
         symbolTable.setTokens(tokens);
 
-
-
         symbolTable.makeSymbolTable();
         symbolTable.printTokenTable();
+
         // Add your tokens here
         Parser parser = new Parser(tokens);
         parser.parse();
 
-        printTree(parser.getRoot(),parser.getTree(),0);
+        if(parser.getError().equals(""))
+            printTree(parser.getRoot(),parser.getTree(),0);
+        else{
+            System.out.println("Error at Line: " + findLine(code, parser.getError())
+                                + ", Token: " + parser.getError());
+        }
     }
 
     // Method to print the whole tree

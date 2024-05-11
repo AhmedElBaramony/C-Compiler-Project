@@ -4,11 +4,20 @@ import org.abego.treelayout.util.DefaultTreeForTreeLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.System.exit;
+
 class Parser {
     private List<Token> tokens;
     private int currentTokenIndex;
+    private String error;
     TextInBox Root = new TextInBox("Start", 40, 20);
     DefaultTreeForTreeLayout<TextInBox> tree = new DefaultTreeForTreeLayout<TextInBox>(Root);
+
+    public Parser(List<Token> tokens) {
+        this.tokens = tokens;
+        this.currentTokenIndex = 0;
+        this.error = "";
+    }
 
     public List<Token> getTokens() {
         return tokens;
@@ -26,33 +35,28 @@ class Parser {
         return Root;
     }
 
-    public Parser(List<Token> tokens) {
-        this.tokens = tokens;
-        this.currentTokenIndex = 0;
+    public String getError() {
+        return error;
     }
 
     public void parse() {
-        program();
-    }
-
-    private TextInBox program() {
-        TextInBox root = new TextInBox("program", 40, 20);
-        tree.addChild(Root,root);
-
-        declaration(root);
-        return root;
+        declaration(Root);
     }
 
     private void declaration(TextInBox parent) {
         TextInBox root = new TextInBox("declaration", 40, 20);
         tree.addChild(parent, root);
 
-        if (tokens.get(currentTokenIndex+1).getType().equals(Lexer.TokenType.VAR_IDENTIFIER)) {
+        if(tokens.get(currentTokenIndex+1).getType().equals(Lexer.TokenType.VAR_IDENTIFIER)) {
             varDeclaration(root);
-        } else if (tokens.get(currentTokenIndex+1).getType().equals(Lexer.TokenType.FUN_IDENTIFIER)) {
+        }
+        else if (tokens.get(currentTokenIndex+1).getType().equals(Lexer.TokenType.FUN_IDENTIFIER)) {
             funcDeclaration(root);
-        } else {
-            // Handle error or return
+        }
+
+        //Recursively match declarations till the end of tokens
+        if(currentTokenIndex < tokens.size()){
+            declaration(root);
         }
     }
 
@@ -62,30 +66,38 @@ class Parser {
 
         typeSpecifier(root);
 
-        String token=tokens.get(currentTokenIndex).getValue();
-        match(token);
-        TextInBox y = new TextInBox(token, 40, 20);
-        tree.addChild(root, y);
+        Token token = tokens.get(currentTokenIndex);
 
+        if(token.getType().equals(Lexer.TokenType.VAR_IDENTIFIER)){
+            match(token.getValue());
+            TextInBox y = new TextInBox(token.getValue(), 40, 20);
+            tree.addChild(root, y);
+        }
+
+        token = tokens.get(currentTokenIndex);
+        if(token.getValue().equals("=")){
+            match("=");
+            TextInBox x = new TextInBox("=", 40, 20);
+            tree.addChild(root, x);
+
+            expression(root);
+        }
         match(";");
         TextInBox x = new TextInBox(";", 40, 20);
         tree.addChild(root, x);
-
     }
 
     private void typeSpecifier(TextInBox parent) {
         TextInBox root = new TextInBox("typeSpecifier", 40, 20);
         tree.addChild(parent, root);
 
-        String token = tokens.get(currentTokenIndex).getValue();
-        if (token.equals("int") || token.equals("float") || token.equals("double") || token.equals("char")) {
-
-            match(token);
-            TextInBox y = new TextInBox(token, 40, 20);
+        Token token = tokens.get(currentTokenIndex);
+        // Lexer needs to differentiate between the keywords and specifiers
+        if (token.getValue().equals("int") || token.getValue().equals("float") ||
+                token.getValue().equals("double") || token.getValue().equals("char")){
+            match(token.getValue());
+            TextInBox y = new TextInBox(token.getValue(), 40, 20);
             tree.addChild(root, y);
-
-        } else {
-            // Handle error or return
         }
     }
 
@@ -100,7 +112,6 @@ class Parser {
         TextInBox y = new TextInBox(token, 40, 20);
         tree.addChild(root, y);
 
-
         match("(");
         TextInBox x = new TextInBox("(", 40, 20);
         tree.addChild(root, x);
@@ -112,14 +123,14 @@ class Parser {
         tree.addChild(root, t);
 
         compoundStmt(root);
-        if(currentTokenIndex+1<tokens.size()){
-            declaration(root);
-        }
     }
 
     private void params(TextInBox parent) {
         TextInBox root = new TextInBox("params", 40, 20);
         tree.addChild(parent, root);
+
+        if(tokens.get(currentTokenIndex).getValue().equals(")"))
+            return;
 
         param(root);
         while (tokens.get(currentTokenIndex).getValue().equals(",")) {
@@ -173,17 +184,24 @@ class Parser {
         String token = tokens.get(currentTokenIndex).getValue();
         if (token.equals("if")) {
             selectionStmt(root);
-        } else if (token.equals("while")) {
+        }
+        else if (token.equals("while")) {
             iterationStmt(root);
 
-        } else if (token.equals("return")) {
+        }
+        else if (token.equals("return")) {
             returnStmt(root);
         }
         else {
-            expressionStmt(root);
+            expression(root);
+
+            match(";");
+            TextInBox x = new TextInBox(";", 40, 20);
+            tree.addChild(root, x);
         }
     }
 
+    //Lazmet omha eh ya Hesham!!!!!!
     private void expressionStmt(TextInBox parent) {
         TextInBox root = new TextInBox("expressionStmt", 40, 20);
         tree.addChild(parent, root);
@@ -193,46 +211,42 @@ class Parser {
         match(";");
         TextInBox x = new TextInBox(";", 40, 20);
         tree.addChild(root, x);
-
     }
 
     private void expression(TextInBox parent) {
         TextInBox root = new TextInBox("expression", 40, 20);
         tree.addChild(parent, root);
 
-        if (tokens.get(currentTokenIndex).getType().equals(Lexer.TokenType.VAR_IDENTIFIER)) {
-            Token token = tokens.get(currentTokenIndex);
+        Token token = tokens.get(currentTokenIndex);
+
+        if (token.getType().equals(Lexer.TokenType.VAR_IDENTIFIER) ||
+                token.getType().equals(Lexer.TokenType.NUMBER)){
             match(token.getValue());
             TextInBox y = new TextInBox(token.getValue(), 40, 20);
             tree.addChild(root, y);
 
-            //HARD CODED
             token = tokens.get(currentTokenIndex);
+            //To be divided!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             if (token.getType().equals(Lexer.TokenType.OPERATOR)){
                 match(token.getValue());
-                TextInBox t= new TextInBox(token.getValue(), 40, 20);
+                TextInBox t = new TextInBox(token.getValue(), 40, 20);
                 tree.addChild(root, t);
+
+                expression(root);
             }
-            expression(root);
         }
-        else {
-            simpleExpression(root);
-        }
-    }
-
-    private void simpleExpression(TextInBox parent) {
-        TextInBox root = new TextInBox("simpleExpression", 40, 20);
-        tree.addChild(parent, root);
-
-        Token token = tokens.get(currentTokenIndex);
-        if ((token.getType()).equals(Lexer.TokenType.VAR_IDENTIFIER) || token.getType().equals(Lexer.TokenType.NUMBER)) {
-            match(token.getValue());
-            TextInBox t = new TextInBox(token.getValue(), 40, 20);
-            tree.addChild(root, t);
-        }else if((token.getType()).equals(Lexer.TokenType.FUN_IDENTIFIER)){
+        else if(token.getType().equals(Lexer.TokenType.FUN_IDENTIFIER)){
             funcCall(root);
-        } else {
-            //expression(root);
+
+            token = tokens.get(currentTokenIndex);
+            //To be divided!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            if (token.getType().equals(Lexer.TokenType.OPERATOR)){
+                match(token.getValue());
+                TextInBox t = new TextInBox(token.getValue(), 40, 20);
+                tree.addChild(root, t);
+
+                expression(root);
+            }
         }
     }
 
@@ -246,17 +260,47 @@ class Parser {
         TextInBox y = new TextInBox(token, 40, 20);
         tree.addChild(root, y);
 
-
         match("(");
         TextInBox x = new TextInBox("(", 40, 20);
         tree.addChild(root, x);
 
-        params(root);
+        args(root);
 
         match(")");
         TextInBox t = new TextInBox(")", 40, 20);
         tree.addChild(root, t);
+    }
 
+    private void args(TextInBox parent) {
+        TextInBox root = new TextInBox("args", 40, 20);
+        tree.addChild(parent, root);
+
+        if(tokens.get(currentTokenIndex).getValue().equals(")"))
+            return;
+
+        arg(root);
+        while (tokens.get(currentTokenIndex).getValue().equals(",")) {
+            match(",");
+            TextInBox y = new TextInBox(",", 40, 20);
+            tree.addChild(root, y);
+            arg(root);
+        }
+    }
+
+    private void arg(TextInBox parent) {
+        TextInBox root = new TextInBox("arg", 40, 20);
+        tree.addChild(parent, root);
+
+        Token token = tokens.get(currentTokenIndex);
+        if(token.getType().equals(Lexer.TokenType.LITERAL)){
+            match(token.getValue());
+
+            TextInBox y = new TextInBox(token.getValue(), 40, 20);
+            tree.addChild(root, y);
+        }
+        else{
+            expression(root);
+        }
     }
 
     private void selectionStmt(TextInBox parent) {
@@ -316,6 +360,7 @@ class Parser {
         TextInBox y = new TextInBox("(", 40, 20);
         tree.addChild(root, y);
 
+        //Expression?? needs revision
         expression(root);
 
         match(")");
@@ -323,7 +368,6 @@ class Parser {
         tree.addChild(root, z);
 
         statement(root);
-
     }
 
     private void returnStmt(TextInBox parent) {
@@ -341,6 +385,7 @@ class Parser {
         match(";");
         TextInBox y = new TextInBox(";", 40, 20);
         tree.addChild(root, y);
+
     }
 
 
@@ -402,8 +447,10 @@ class Parser {
     private void match(String expectedToken) {
         if (currentTokenIndex < tokens.size() && tokens.get(currentTokenIndex).getValue().equals(expectedToken)) {
             currentTokenIndex++;
-        }else {
-            currentTokenIndex++;
+        }
+        else {
+            error = tokens.get(currentTokenIndex).getValue();
+            currentTokenIndex = tokens.size() - 1;
         }
     }
 }
