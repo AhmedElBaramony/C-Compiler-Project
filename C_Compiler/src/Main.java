@@ -19,6 +19,7 @@ public class Main {
         String code = """
                 \\* This is a multi-line comment *\\\s
                 #include <stdio.h>
+                enum color{red = 0, green = 10, blue = 3}
                 int factorial(int n) {
                     if (n <= 1)
                         return 1;
@@ -26,7 +27,7 @@ public class Main {
                         return factorial(n - 1) * factorial(n - 2);
                 }
                 int main() {
-                    num = 1 + 1 * 10;
+                    num = 10;
                     printf("Factorial of %d is %d\\n", num, factorial(num));
                     return 0;
                 }
@@ -41,14 +42,20 @@ public class Main {
 
         // Add your tokens here
         Parser parser = new Parser(tokens);
-        parser.parse();
-
-        if(parser.getError().equals(""))
-            printTree(parser.getRoot(),parser.getTree(),0);
-        else{
-            System.out.println("Error at Line: " + findLine(code, parser.getError())
-                                + ", Token: " + parser.getError());
+        try{
+            parser.parse();
+        }catch(Exception e){}
+        finally {
+            if(parser.getError().equals(""))
+                printTree(parser.getRoot(),parser.getTree(),0);
+            else{
+                System.out.println("Error at Line: " + findLine(code, parser.getError())
+                        + ", Token: " + parser.getError());
+            }
         }
+
+
+
     }
 
     // Method to print the whole tree

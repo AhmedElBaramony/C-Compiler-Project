@@ -1,10 +1,7 @@
 import org.abego.treelayout.demo.TextInBox;
 import org.abego.treelayout.util.DefaultTreeForTreeLayout;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static java.lang.System.exit;
 
 class Parser {
     private List<Token> tokens;
@@ -47,16 +44,93 @@ class Parser {
         TextInBox root = new TextInBox("declaration", 40, 20);
         tree.addChild(parent, root);
 
-        if(tokens.get(currentTokenIndex+1).getType().equals(Lexer.TokenType.VAR_IDENTIFIER)) {
+        if(tokens.get(currentTokenIndex).getValue().equals("enum")) {
+            enumDeclaration(root);
+        }
+        else if(tokens.get(currentTokenIndex+1).getType().equals(Lexer.TokenType.VAR_IDENTIFIER)) {
             varDeclaration(root);
         }
         else if (tokens.get(currentTokenIndex+1).getType().equals(Lexer.TokenType.FUN_IDENTIFIER)) {
             funcDeclaration(root);
         }
 
+
         //Recursively match declarations till the end of tokens
         if(currentTokenIndex < tokens.size()){
             declaration(root);
+        }
+    }
+
+    private void enumDeclaration(TextInBox parent){
+        TextInBox root = new TextInBox("enumDeclaration", 40, 20);
+        tree.addChild(parent, root);
+
+        //enum
+        Token token = tokens.get(currentTokenIndex);
+        match(token.getValue());
+        TextInBox x = new TextInBox("enum", 40, 20);
+        tree.addChild(root, x);
+
+        //varIdentifier
+        token = tokens.get(currentTokenIndex);
+        if(token.getType().equals(Lexer.TokenType.VAR_IDENTIFIER)){
+            match(token.getValue());
+            x = new TextInBox(token.getValue(), 40, 20);
+            tree.addChild(root, x);
+        }
+
+        //{ enumArgs }
+        match("{");
+        x = new TextInBox("{", 40, 20);
+        tree.addChild(root, x);
+
+        enumParams(root);
+
+        match("}");
+        x = new TextInBox("}", 40, 20);
+        tree.addChild(root, x);
+    }
+
+    private void enumParams(TextInBox parent) {
+        TextInBox root = new TextInBox("enumParams", 40, 20);
+        tree.addChild(parent, root);
+
+        if(tokens.get(currentTokenIndex).getValue().equals("}"))
+            return;
+
+        enumParam(root);
+        while (tokens.get(currentTokenIndex).getValue().equals(",")) {
+            match(",");
+            TextInBox y = new TextInBox(",", 40, 20);
+            tree.addChild(root, y);
+
+            enumParam(root);
+        }
+    }
+
+    private void enumParam(TextInBox parent) {
+        TextInBox root = new TextInBox("enumParam", 40, 20);
+        tree.addChild(parent, root);
+
+        Token token = tokens.get(currentTokenIndex);
+        match(token.getValue());
+        TextInBox y = new TextInBox(token.getValue(), 40, 20);
+        tree.addChild(root, y);
+
+        token = tokens.get(currentTokenIndex);
+        if(token.getValue().equals("=")){
+            match(token.getValue());
+            y = new TextInBox(token.getValue(), 40, 20);
+            tree.addChild(root, y);
+
+            token = tokens.get(currentTokenIndex);
+            if(token.getType().equals(Lexer.TokenType.NUMBER)){
+                match(token.getValue());
+                y = new TextInBox(token.getValue(), 40, 20);
+                tree.addChild(root, y);
+            }
+            else
+                match("Error");
         }
     }
 
