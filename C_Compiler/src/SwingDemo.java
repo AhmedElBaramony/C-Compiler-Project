@@ -26,13 +26,6 @@ public class SwingDemo {
         dialog.setVisible(true);
     }
 
-
-    /**
-     * Shows a dialog with a tree in a layout created by {@link TreeLayout},
-     * using the Swing component {@link TextInBoxTreePane}.
-     *
-     * @param args args[0]: treeName (default="")
-     */
     public static void main(String[] args) {
         String code = """
                 \\* This is a multi-line comment *\\\s

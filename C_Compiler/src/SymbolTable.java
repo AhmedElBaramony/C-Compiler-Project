@@ -18,6 +18,10 @@ public class SymbolTable {
         symbols.add(symbol);
     }
 
+    public List<Token> getSymbols() {
+        return symbols;
+    }
+
     public int searchSymbolIndex(String symbol) {
         for (Token sym : symbols) {
             if (Objects.equals(sym.getValue(), symbol)){
