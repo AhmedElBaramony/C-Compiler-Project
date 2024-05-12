@@ -294,9 +294,7 @@ class Parser {
             return;
 
         token = tokens.get(currentTokenIndex);
-        //To be divided!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        //Can it even be divided?!!
-        //Does it even need to????
+
         if (token.getType().equals(Lexer.TokenType.OPERATOR)){
             match(token.getValue());
             TextInBox t = new TextInBox(token.getValue(), 80, 20);

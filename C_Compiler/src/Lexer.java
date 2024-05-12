@@ -4,8 +4,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Lexer {
+
     public enum TokenType {
-        COMMENT, MACRO, KEYWORD,FUN_IDENTIFIER, VAR_IDENTIFIER, LITERAL, NUMBER, OPERATOR, DELIMITER, WHITESPACE,ERROR ,PROGRAM
+        COMMENT, MACRO, KEYWORD,FUN_IDENTIFIER, VAR_IDENTIFIER,
+        LITERAL, NUMBER, OPERATOR, DELIMITER, WHITESPACE,ERROR
     }
 
     static String signPart = "(((\\+-)*\\+?)|((-\\+)*-?))";
@@ -31,22 +33,25 @@ public class Lexer {
     static String relationalEqualityOperatorsRegex = "(==|!=)";
     static String logicalOperatorsRegex = "(&&|\\|\\||!)";
     static String bitwiseOperatorsRegex = "(&|\\||\\^|~|<<|>>)";
-    static String allOperatorsRegex =relationalEqualityOperatorsRegex+"|"+ logicalOperatorsRegex + "|" + incrementDecrementOperatorsRegex +"|"+ assignmentOperatorsRegex +"|" + bitwiseOperatorsRegex + "|" + relationalInequalityOperatorsRegex + "|" + arithmeticOperatorsRegex;
+    static String allOperatorsRegex =relationalEqualityOperatorsRegex+"|"+ logicalOperatorsRegex + "|" + incrementDecrementOperatorsRegex +"|"+ assignmentOperatorsRegex
+                                    +"|" + bitwiseOperatorsRegex + "|" + relationalInequalityOperatorsRegex + "|" + arithmeticOperatorsRegex;
 
 
 
     private static final Pattern[] patterns = {
-            Pattern.compile("\\\\\\*.*\\*\\\\|\\\\\\\\.*"),                // Comments
-            Pattern.compile("#.*"),                                        //Macros
-            Pattern.compile("\\b(if|else|while|for|int|float|return|Alignas|Alignof|auto|Bool|break|case|char|const|continue|default|do|double|enum|extern|false|goto|inline|long|nullptr|register|restrict|short|signed|sizeof|static|struct|switch|True|typedef|union|unsigned|void|volatile)\\b"), // Keywords
-            Pattern.compile("\\b[a-zA-Z_][a-zA-Z0-9_]*\\b(?=\\()"),     // Function Identifiers
-            Pattern.compile("\\b[a-zA-Z_][a-zA-Z0-9_]*\\b"),             // Variable identifier
-            Pattern.compile("\"(.)*\""),                                   //Literal
-            Pattern.compile("\\b"+numberRegex+"\\b"),                      // Numbers
-            Pattern.compile(allOperatorsRegex),  // Operators
-            Pattern.compile("[(){};,]"),                                   // Delimiters
-            Pattern.compile("\\s+"),                                       // Whitespace -------------------------> Not token !!!!!!!!!!!!!!!!!!
-            Pattern.compile(".*")                                           // Error
+            Pattern.compile("\\\\\\*.*\\*\\\\|\\\\\\\\.*"),                     // Comments
+            Pattern.compile("#.*"),                                             //Macros
+            Pattern.compile("\\b(if|else|while|for|int|float|return|Alignas|Alignof|auto|Bool|break|case|char|const|continue|default" +
+                                        "|do|double|enum|extern|false|goto|inline|long|nullptr|register|restrict|" +
+                                        "short|signed|sizeof|static|struct|switch|True|typedef|union|unsigned|void|volatile)\\b"), // Keywords
+            Pattern.compile("\\b[a-zA-Z_][a-zA-Z0-9_]*\\b(?=\\()"),             // Function Identifiers
+            Pattern.compile("\\b[a-zA-Z_][a-zA-Z0-9_]*\\b"),                    // Variable identifier
+            Pattern.compile("\"(.)*\""),                                        //Literal
+            Pattern.compile("\\b"+numberRegex+"\\b"),                           // Numbers
+            Pattern.compile(allOperatorsRegex),                                        // Operators
+            Pattern.compile("[(){};,]"),                                        // Delimiters
+            Pattern.compile("\\s+"),                                            // Whitespace -------------------------> Not token
+            Pattern.compile(".*")                                               // Error
     };
 
     // Tokenize input source code
