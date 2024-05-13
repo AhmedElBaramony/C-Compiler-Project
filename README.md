@@ -3,7 +3,7 @@
 
 ## Project Overview
 
-This C-Compiler is designed as a teaching aid for understanding the inner workings of compilers. It features a comprehensive GUI to facilitate learning and interaction with the compiler's core components, including lexical analysis, parsing, and symbol table management. The project focuses on compiling C code into an abstract syntax tree, highlighting each stage of the compilation process.
+This C-Compiler is designed to efficiently compile C code into an abstract syntax tree, demonstrating the inner workings of compilers through a comprehensive GUI. It facilitates deep interaction with core compiler components, including lexical analysis, parsing, and symbol table management, effectively highlighting each stage of the compilation process.
 
 ## Key Features
 
